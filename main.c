@@ -23,27 +23,19 @@ int taille = 0;
 
 void ajoutertache(tache m[])
 {
-    printf("Entrez le titre de la tâche : ");
-    getchar();
-    fgets(m[taille].titre, 100, stdin);
+    printf("Entrez le titre de la tache : ");
+    scanf(" %[^\n]", m[taille].titre);
 
-    printf("Entrez la description de la tâche : ");
-    fgets(m[taille].description, 800, stdin);
+    printf("Entrez la description de la tache : ");
+    scanf(" %[^\n]",m[taille].description);
 
     printf("Entrez votre deadline : \n");
 
-    printf("Jour : ");
-    scanf("%d", &m[taille].deadline.jour);
+    printf("sous forme (JJ/mm/annee) : ");
+    scanf("%d/%d/%d", &m[taille].deadline.jour,&m[taille].deadline.mois,&m[taille].deadline.annee);
 
-    printf("Mois : ");
-    scanf("%d", &m[taille].deadline.mois);
-
-    printf("Année : ");
-    scanf("%d", &m[taille].deadline.annee);
-
-    printf("Entrez le statut de la tâche : ");
-    getchar();
-    fgets(m[taille].status, 100, stdin);
+    printf("Entrez le statut de la tache : ");
+    scanf(" %[^\n]",m[taille].status);
 
     if (taille == 0)
     {
@@ -60,7 +52,7 @@ void ajoutertache(tache m[])
 void ajouterplusieurtache(tache m[])
 {
     int nbr;
-    printf("Entrez le nombre de tâches à ajouter : ");
+    printf("Entrez le nombre de taches  ajouter : ");
     scanf("%d", &nbr);
 
     for (int i = 0; i < nbr; i++)
@@ -85,13 +77,23 @@ void affiche_trialphabet(tache m[], int n)
         m[j + 1] = cmd;
     }
 }
+void affich(tache m)
+{
+        printf("Identifiant : %d\n", m.identifiant);
+        printf("Titre de la tache : %s", m.titre);
+        printf("Description : %s", m.description);
+        printf("Deadline : %d/%d/%d\n", m.deadline.jour, m.deadline.mois, m.deadline.annee);
+        printf("Statut : %s\n", m.status);
+        printf("-----------------------------\n");
+    
+}
 
-void affich(tache m[], int n)
+void affichplus(tache m[], int n)
 {
     for (int i = 0; i < n; i++)
     {
         printf("Identifiant : %d\n", m[i].identifiant);
-        printf("Titre de la tâche : %s", m[i].titre);
+        printf("Titre de la tache : %s", m[i].titre);
         printf("Description : %s", m[i].description);
         printf("Deadline : %d/%d/%d\n", m[i].deadline.jour, m[i].deadline.mois, m[i].deadline.annee);
         printf("Statut : %s\n", m[i].status);
@@ -129,7 +131,7 @@ void affichdeadline3day(tache m[], int n)
     printf("Mois : ");
     scanf("%d", &moisactuel);
 
-    printf("Année : ");
+    printf("Annee : ");
     scanf("%d", &anneeactuel);
 
     for (int i = 0; i < n; i++)
@@ -145,6 +147,104 @@ void affichdeadline3day(tache m[], int n)
         }
     }
 }
+int supprimertacheparID(int id,int taille,tache m[])
+{
+    
+   int index=-1 ;
+    
+    for (int i = 0; i < taille; i++)
+    {
+        if(m[i].identifiant==id)
+        {index=i;}
+    }
+    if(index!=-1)
+    for(int i=index; i<taille-1; i++)
+        {
+            m[i]=m[i+1];
+            break;                                    //Sortez de la boucle dÃ¨s que vous avez trouvÃ© l'ID
+        }
+        taille--;
+return taille;
+}
+void rechercheparid(tache m[],int taille,int id)
+{
+for (int i = 0; i < taille; i++)
+{
+    if(m[i].identifiant==id)
+    {
+        affich (m[i]);
+
+    }
+
+}
+
+}
+void recherchepartitre(tache m[],int taille){
+char rechtitre[100];
+printf("entrer le titre a rechercher :");
+scanf(" %[^\n]",rechtitre);
+for (int i = 0; i < taille; i++)
+{
+    if(strcmp(m[i].titre,rechtitre)==0)
+    {
+        affich (m[i]);
+    }
+
+}
+
+}
+void modifierdescrip(tache m[],int taille,int identif){
+    int index;
+    for (int i = 0; i < taille; i++)
+    {
+        if(m[i].identifiant==identif)
+        {index=i;}
+    }
+
+char newdescrip[800];
+printf("modifier la description  :");
+getchar();
+fgets(newdescrip,800,stdin);
+
+strcpy(m[index].description,newdescrip);
+}
+
+
+void modifierdeadline(tache m[],int taille,int identif){
+    int index;
+    for (int i = 0; i < taille; i++)
+    {
+        if(m[i].identifiant==identif)
+        {index=i;}
+    }
+
+int jour;
+int mois;
+int annee;
+printf("donner la nouvelle date sous forme(JJ/MOIS/annee) :");
+scanf("%d/%d/%d",&jour,mois,annee);
+m[index].deadline.jour=jour;
+m[index].deadline.mois=mois;
+m[index].deadline.annee=annee;
+}
+
+
+void modifierstatus(tache m[],int taille,int identif){
+    int index;
+    for (int i = 0; i < taille; i++)
+    {
+        if(m[i].identifiant==identif)
+        {index=i;}
+    }
+
+char status[100];
+printf("modifier le status (a realiser/en cours de realisation/ finalisee) :");
+getchar();
+fgets(status,100,stdin);
+
+strcpy(m[index].status,status);
+}
+void statistique(){}
 
 int main()
 {
@@ -152,17 +252,23 @@ int main()
 
     ajouterplusieurtache(M);
 
-
-    system("cls");
-
-    printf("\nTâches avec deadline dans les 3 prochains jours:\n");
+   system("cls");
+affichplus(M, taille);
+ /*  printf("\nTaches avec deadline dans les 3 prochains jours:\n");
     affichdeadline3day(M, taille);
 
 
     trierParDeadline(M, taille);
 
-    printf("Liste triée par deadline:\n");
-    affich(M, taille);
+    printf("Liste triee par deadline:\n");
+    affichplus(M, taille);*/
+    
+   /* printf("entrer id : ");
+    scanf("%d",&ident);*/
+    
+    recherchepartitre(M,taille);
+//taille=supprimertacheparID(ident,taille,M);
+
 
     return 0;
 }
